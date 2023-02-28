@@ -1,44 +1,66 @@
 <script setup lang="ts">
-import CodePlayground from '@/components/CodePlayground/index.vue'
-import { ref } from 'vue';
-import serverURL from './request/libs/serverURL';
+import CodePlayground from '@/components/CodePlayground/index.vue';
+import { onMounted, ref } from 'vue';
+import { NButton, NSelect } from 'naive-ui';
+import { requestJsonFile } from './request';
 
 interface FileItem {
-  id: string,
-  label: string,
-  url: string
+  id: string;
+  label: string;
+  baseURL: RequestHttp.ServerAlias;
+  url: string;
 }
 
-
-const editorComponent = ref<typeof CodePlayground>()
-const htmlList: FileItem[] = [
+const currentTheme = ref('vs-dark');
+const editorComponent = ref<typeof CodePlayground>();
+const htmlList = ref<FileItem[]>([]);
+const themes = ref<
   {
-    id: '1',
-    label: '红色页面',
-    url: serverURL('@local', '/static/pages/red.html')
-  },
-  {
-    id: '2',
-    label: '第二个页面',
-    url: serverURL('@local', '/static/pages/test.html')
-  }
-]
+    label: string;
+    value: string;
+  }[]
+>([]);
+const activeItem = ref<FileItem>();
 
-const activeItem = ref<FileItem>(htmlList[0])
-
-function toSelectFile (item: FileItem) {
-  activeItem.value = item
+function toSelectFile(item: FileItem) {
+  activeItem.value = item;
 }
 
-function runCode () {
-  editorComponent?.value?.reRunCode()
+function runCode() {
+  editorComponent?.value?.reRunCode();
+}
+
+onMounted(function () {
+  Promise.all([
+    requestJsonFile('/static/json/theme-list.json'),
+    requestJsonFile<FileItem[]>('/static/json/file-list.json'),
+  ]).then(function (res) {
+    themes.value = res[0];
+    htmlList.value = res[1];
+    if (htmlList.value.length) {
+      activeItem.value = htmlList.value[0];
+    }
+  });
+});
+
+function onThemeChange(value: string) {
+  editorComponent?.value?.setTheme(value);
 }
 </script>
 
 <template>
   <div class="code-app">
     <div class="header">
-      <div class="btn-run" @click="runCode">运行</div>
+      <div class="htop">
+        <span class="section-prefix">主题</span>
+        <NSelect
+          @update-value="onThemeChange"
+          style="width: 120px"
+          v-model:value="currentTheme"
+          :options="themes"
+        ></NSelect>
+      </div>
+      <NButton @click="runCode" type="primary" style="margin-left: 10px">运行代码</NButton>
     </div>
     <div class="col2">
       <ul>
@@ -46,20 +68,25 @@ function runCode () {
           v-for="item in htmlList"
           :key="item.id"
           @click="toSelectFile(item)"
-          :class="{'is-active': item.id === activeItem?.id}"
+          :class="{ 'is-active': item.id === activeItem?.id }"
         >
           <span>{{ item.label }}</span>
         </li>
       </ul>
       <template v-if="activeItem?.url">
-        <CodePlayground ref="editorComponent" class="demo-code-editor" :url="activeItem.url" />
+        <CodePlayground
+          :baseURL="activeItem.baseURL"
+          ref="editorComponent"
+          class="demo-code-editor"
+          :url="activeItem.url"
+        />
       </template>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.code-app{
+.code-app {
   position: absolute;
   left: 0;
   right: 0;
@@ -70,8 +97,20 @@ function runCode () {
 
   .col2 {
     display: flex;
-  align-items: stretch;
-  flex: 1;
+    align-items: stretch;
+    flex: 1;
+    height: 0;
+  }
+
+  .htop {
+    display: flex;
+    align-items: center;
+  }
+
+  .section-prefix {
+    font-size: 14px;
+    color: white;
+    margin: 0 10px 0 20px;
   }
 
   .header {
@@ -80,17 +119,9 @@ function runCode () {
     border-bottom: #000 solid 1px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding: 0 40px;
-    .btn-run {
-      font-size: 14px;
-      background-color: #3a8b42;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      user-select: none;
-      cursor: pointer;
-    }
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-shrink: 0;
   }
   ul {
     padding: 10px 0;
@@ -109,8 +140,8 @@ function runCode () {
         background-color: #6c6c6c;
       }
       &.is-active {
-        background-color: yellow;
-        color: black;
+        background-color: #18a058;
+        color: white;
       }
     }
   }

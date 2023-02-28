@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>多边形+标注</title>
+  <style type="text/css">
+    html,
+    body {
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+    }
+    .container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script type="text/javascript" src="http://127.0.0.1:1314/static/js/maptalks.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.4/axios.min.js"></script>
+  <body>
+    <div id="map" class="container"></div>
+
+    <script>
+      (async function () {
+        async function getJson(url) {
+          return axios.get(url).then(function (res) {
+            return res.data;
+          });
+        }
+
+        const [stationRes, geoRes] = await Promise.all([
+          getJson('http://127.0.0.1:1314/static/pages/rain/cityRain.json'),
+          getJson('http://127.0.0.1:1314/static/pages/rain/cityRainGeoJson.json'),
+        ]);
+
+        // 地图上的标注
+        let markerList = stationRes.data.map(function (item) {
+          if (Number(item.value) === 0) return null;
+          return new maptalks.Marker([item.stationLng, item.stationLat], {
+            visible: true,
+            symbol: {
+              textName: item.value,
+              textFill: 'red',
+              textSize: 14,
+            },
+          });
+        });
+
+        markerList = markerList.filter(function (item) {
+          return !!item;
+        });
+
+        // 地图上不同颜色的多边形
+        const geometries = maptalks.GeoJSON.toGeometry(geoRes.data, function (item) {
+          item.updateSymbol({
+            polygonFill: item.properties.color,
+            polygonOpacity: item.properties.opacity,
+            lineWidth: 0,
+          });
+        });
+
+        var map = new maptalks.Map('map', {
+          center: [106.33, 29.35],
+          zoom: 8,
+          baseLayer: new maptalks.TileLayer('base', {
+            // urlTemplate: 'https://placekitten.com/g/200/300',
+            urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c', 'd'],
+          }),
+        });
+
+        const iLayer = new maptalks.VectorLayer('vector').addTo(map);
+        iLayer.addGeometry(geometries);
+        iLayer.addGeometry(markerList);
+      })();
+    </script>
+  </body>
+</html>

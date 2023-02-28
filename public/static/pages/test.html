@@ -1,17 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>测试</title>
-  <style>
-    body {
-      background: green;
-    }
-  </style>
-</head>
-<body>
-  <h1>我是测试文件</h1>
-</body>
+<html>
+  <head>
+     
+    <meta charset="utf-8" />
+     
+    <title>菜鸟教程(runoob.com)</title>
+     
+  </head>
+  <body>
+    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+      您的浏览器不支持 HTML5 canvas 标签。
+    </canvas>
+
+    <script>
+      var c=document.getElementById("myCanvas");
+      var ctx=c.getContext("2d");
+      ctx.fillStyle="#FF0000";
+      ctx.fillRect(0,0,150,75);
+    </script>
+  </body>
 </html>

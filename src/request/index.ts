@@ -10,13 +10,22 @@ const axiosInstance = axios.create({
  * @param options 请求配置
  * @returns 请求结果
  */
-export default function request(
+export default function request<T>(
   options: RequestHttp.Base & {
     url: string;
   }
 ) {
-  return axiosInstance({
+  return axiosInstance<T>({
     baseURL: '',
     url: serverURL(options.baseURL, options.url),
+  });
+}
+
+export async function requestJsonFile<T = any>(path: string) {
+  return request<T>({
+    baseURL: '@local',
+    url: path,
+  }).then(function (res) {
+    return res.data;
   });
 }

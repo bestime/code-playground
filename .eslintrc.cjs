@@ -4,7 +4,7 @@ require('@rushstack/eslint-patch/modern-module-resolution');
 module.exports = {
   root: true,
   globals: {
-    
+    'RequestHttp': true
   },
   extends: [
     'plugin:vue/vue3-essential',
@@ -21,7 +21,6 @@ module.exports = {
     "no-return-await": "error", // 禁用不必要的 return await
     "no-sequences": "error", // 禁用逗号操作符
     "no-self-compare": "error", // 禁止自身比较
-    "require-await": "error", // 禁止使用不带 await 表达式的 async 函数
     "no-use-before-define": "error", // 禁止在变量定义之前使用它们
     "no-var": "error", // 不允许使用var
     "no-multi-assign": "error", // 禁止连续赋值

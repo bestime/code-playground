@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "label": "多边形+标注",
+    "baseURL": "@local",
+    "url": "/static/pages/rain/index.html"
+  },
+  {
+    "id": "2",
+    "label": "canvas绘制矩形",
+    "baseURL": "@local",
+    "url": "/static/pages/test.html"
+  }
+]
