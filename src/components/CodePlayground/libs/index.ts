@@ -73,7 +73,13 @@ export default class CodePlayground {
       language: 'html',
       tabSize: 2,
       automaticLayout: false,
-      theme: 'vs-dark',
+      theme: 'vs',
+      quickSuggestions: true,
+      minimap: {
+        enabled: true,
+      },
+      mouseWheelZoom: true,
+      showDeprecated: true,
     });
 
     // 内容更新回调
@@ -150,6 +156,7 @@ export default class CodePlayground {
    */
   setCode(data: string) {
     this._editor.setValue(data);
+    this._editor.setScrollTop(0);
     return this;
   }
 

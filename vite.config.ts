@@ -65,6 +65,8 @@ export default defineConfig(function ({ mode }) {
       assetsDir: 'build',
       rollupOptions: {
         manualChunks: {
+          'ax_da_lo': ['axios', 'lodash'],
+          'monaco-editor': ['monaco-editor'],
           'vue-group': ['vue', 'vue-router']
         }
       },

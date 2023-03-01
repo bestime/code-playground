@@ -4,7 +4,8 @@
     "types",
     "src/**/*",
     "src/**/*.vue",
-    "src/request/types/request-http.d.ts"
+    "src/request/types/request-http.d.ts",
+    "public/static/js/bestime/index.d.ts",
   ],
   "compilerOptions": {
     "baseUrl": ".",

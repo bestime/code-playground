@@ -1,14 +1,32 @@
 [
   {
     "id": "1",
-    "label": "多边形+标注",
-    "baseURL": "@local",
-    "url": "/static/pages/rain/index.html"
+    "label": "天气类",
+    "children": [
+      {
+        "id": "1.1",
+        "label": "实况",
+        "baseURL": "@local",
+        "url": "/static/pages/rain.html"
+      }
+    ]
   },
   {
     "id": "2",
-    "label": "canvas绘制矩形",
-    "baseURL": "@local",
-    "url": "/static/pages/test.html"
+    "label": "图形产品",
+    "children": [
+      {
+        "id": "2.1",
+        "label": "雷达",
+        "baseURL": "@local",
+        "url": "/static/pages/radar.html"
+      },
+      {
+        "id": "2.2",
+        "label": "安全射界图",
+        "baseURL": "@local",
+        "url": "/static/pages/aqsjt.html"
+      }
+    ]
   }
 ]
